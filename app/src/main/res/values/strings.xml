@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Garage Door Keeper</string>
+    <string name="turn_off_screen">TURN OFF SCREEN</string>
+    <string name="call_delay">Call Delay</string>
+    <string name="call_number">Call Number</string>
+    <string name="check_number">CHECK NUMBER</string>
+</resources>
