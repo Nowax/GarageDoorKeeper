@@ -107,11 +107,12 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="138dp"
+            android:layout_height="76dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/imageButton"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:gravity="center_vertical|center_horizontal">
 
             <Button
                 android:layout_width="wrap_content"

@@ -2,8 +2,10 @@ package com.herokuapp.nowax.garagedoorkeeper;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.PowerManager;
@@ -30,12 +32,22 @@ public class WatchingTime extends Activity {
     Timer timer;
     MyTimerTask myTimerTask;
     private int brightness;
+    RemoteControlReceiver receiver;
+
+    @Override
+    public void onResume() {
+        IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
+        registerReceiver(receiver, filter);
+        super.onResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watching_time);
         button = (ImageButton) findViewById(R.id.imageButton);
+        receiver = new RemoteControlReceiver();
+        receiver.setMainActivity(this);
         initiateMainButtonBehaviour();
         initiateBrightnessChangeMode();
     }
@@ -123,7 +135,6 @@ public class WatchingTime extends Activity {
 
     public void onTurnOffScreen(View v) {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
         lp.screenBrightness = 0;// 100 / 100.0f;
         getWindow().setAttributes(lp);
     }
@@ -153,3 +164,5 @@ class MyTimerTask extends TimerTask {
     }
 
 }
+
+
