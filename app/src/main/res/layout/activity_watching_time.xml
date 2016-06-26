@@ -13,7 +13,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="1">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -70,10 +71,11 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="false"
-            android:layout_alignTop="@+id/imageButton">
+            android:layout_alignTop="@+id/imageButton"
+            android:layout_weight="0.48">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -94,9 +96,36 @@
                 android:text="+48514561699" />
         </LinearLayout>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignTop="@+id/imageButton"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/white"
+                android:text="Emergency calls          "
+                android:id="@+id/emergencyCallsView" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/white"
+                android:text="0"
+                android:id="@+id/noOfCallsView"
+                android:layout_weight="0.49" />
+        </LinearLayout>
+
         <ImageButton
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:id="@+id/imageButton"
             android:background="@drawable/garage_closed"
             android:scaleType="fitXY"

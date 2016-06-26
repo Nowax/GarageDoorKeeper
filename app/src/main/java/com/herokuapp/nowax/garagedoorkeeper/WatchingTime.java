@@ -2,84 +2,85 @@ package com.herokuapp.nowax.garagedoorkeeper;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class WatchingTime extends Activity {
-
-    ImageButton button;
-    Timer timer;
-    MyTimerTask myTimerTask;
-    private int brightness;
-    RemoteControlReceiver receiver;
+    private static final String EXTRA_START_DELAY = "com.herokuapp.nowax.garagedoorkeeper.delay";
+    private static final String EXTRA_START_PHONE_NUMBER = "com.herokuapp.nowax.garagedoorkeeper.phone_number";
+    private static final String EXTRA_START_CALLS_NUMBER = "com.herokuapp.nowax.garagedoorkeeper.calls_number";
+    private Timer timer;
+    private MyTimerTask myTimerTask;
+    private Boolean has_been_already_started = false;
+    private Integer noOfCalls = 0;
 
     @Override
     public void onResume() {
-        IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);
-        registerReceiver(receiver, filter);
+        if (has_been_already_started) {
+            Intent intent = getIntent();
+            Context context = getApplicationContext();
+            Integer calls = noOfCalls + 1;
+            String number = ((EditText)findViewById(R.id.editTextCallNumber)).getText().toString();
+            String delay = ((EditText)findViewById(R.id.editTextDelay)).getText().toString();
+            finish();
+            restart(context, intent, calls, number, delay);
+        }
+        has_been_already_started=true;
         super.onResume();
+    }
+
+    public static void restart(Context context, Intent intent, int noOfCalls, String phoneNumber, String delay) {
+        intent.putExtra(EXTRA_START_CALLS_NUMBER, noOfCalls);
+        intent.putExtra(EXTRA_START_PHONE_NUMBER, phoneNumber);
+        intent.putExtra(EXTRA_START_DELAY, delay);
+        context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
         setContentView(R.layout.activity_watching_time);
-        button = (ImageButton) findViewById(R.id.imageButton);
-        receiver = new RemoteControlReceiver();
-        receiver.setMainActivity(this);
-        initiateMainButtonBehaviour();
         initiateBrightnessChangeMode();
+        setUpInitialPrimValues(intent);
+    }
+
+    private void setUpInitialPrimValues(Intent intent) {
+        noOfCalls = intent.getIntExtra(EXTRA_START_CALLS_NUMBER, noOfCalls);
+
+        TextView v1 = (TextView) findViewById(R.id.noOfCallsView);
+        v1.setText(noOfCalls.toString());
+
+        String number = intent.getStringExtra(EXTRA_START_PHONE_NUMBER);
+        if (number != null) {
+            TextView v2 = (EditText) findViewById(R.id.editTextCallNumber);
+            v2.setText(number.toString());
+        }
+
+        String delay = intent.getStringExtra(EXTRA_START_DELAY);
+        if (delay != null) {
+            TextView v3 = (EditText) findViewById(R.id.editTextDelay);
+            v3.setText(delay.toString());
+        }
     }
 
     private void initiateBrightnessChangeMode() {
-        try{
-            Settings.System.putInt(getContentResolver(),
+        Settings.System.putInt(getContentResolver(),
                     Settings.System.SCREEN_BRIGHTNESS_MODE,
                     Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-
-            brightness = Settings.System.getInt(getContentResolver(),
-                    Settings.System.SCREEN_BRIGHTNESS);
-        }
-        catch(Settings.SettingNotFoundException e){
-            Log.e("Error", "Cannot access system brightness");
-            e.printStackTrace();
-        }
-    }
-
-    private void initiateMainButtonBehaviour() {
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                handleGarageClosing();
-            }
-        });
-
-        button.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View view, MotionEvent event) {
-                handleGarageOpening();
-                return false;
-            }
-        });
     }
 
     @Override
@@ -96,17 +97,6 @@ public class WatchingTime extends Activity {
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    private void remeberKeyEventDuringCall() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        };
-        AtomicReference<Thread> myThread = new AtomicReference<>(new Thread(runnable));
-        myThread.get().start();
     }
 
     public void handleGarageClosing() {
@@ -160,7 +150,7 @@ class MyTimerTask extends TimerTask {
 
     @Override
     public void run() {
-            watchingTimeHandle.callToSpecificNumber();
+        watchingTimeHandle.callToSpecificNumber();
     }
 
 }
