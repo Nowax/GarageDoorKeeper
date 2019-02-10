@@ -15,6 +15,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.view.MotionEvent;
+import android.view.View.OnTouchListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,6 +58,7 @@ public class WatchingTime extends Activity {
         setContentView(R.layout.activity_watching_time);
         initiateBrightnessChangeMode();
         setUpInitialPrimValues(intent);
+        setUpImageButton();
     }
 
     private void setUpInitialPrimValues(Intent intent) {
@@ -75,6 +78,22 @@ public class WatchingTime extends Activity {
             TextView v3 = (EditText) findViewById(R.id.editTextDelay);
             v3.setText(delay.toString());
         }
+    }
+
+    private void setUpImageButton() {
+        ImageButton im_button = (ImageButton) findViewById(R.id.imageButton);
+        im_button.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    handleGarageOpening();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    handleGarageClosing();
+                }
+
+                return true;
+            }
+        });
     }
 
     private void initiateBrightnessChangeMode() {

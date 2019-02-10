@@ -124,14 +124,13 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/imageButton"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:id="@+id/imageButton"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/garage_closed"
-            android:scaleType="fitXY"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal" />
+            android:longClickable="true"
+            android:scaleType="fitXY" />
 
         <LinearLayout
             android:orientation="horizontal"
